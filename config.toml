@@ -44,10 +44,9 @@ preserveTaxonomyNames = true
     since = 2018
     author = "John Paul Cassil"                           # Author's name
     avatar = "/images/me/jp.jpg"           # Author's avatar
-    subtitle = ""         # Subtitle
+    subtitle = "exploring the world of data science"         # Subtitle
     cdn_url = ""           # Base CDN URL
-    home_mode = "" # post or other
-
+    home_mode = "" # post or other 
     google_verification = "" 
    
     description = "About John Cassil" # site description 
