@@ -1,4 +1,4 @@
-baseURL = "https://johncassil.com"
+baseURL = "johncassil.com"
 languageCode = "en-us"
 title = "home"
 theme = "LeaveIt"
