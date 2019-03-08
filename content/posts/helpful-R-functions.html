@@ -14,6 +14,7 @@ categories: ["Helpful"]
 <p>The structure and setup of any data analysis is much more important than the technology that is used to accomplish the individual steps involved. However, it helps to have handy functions readily available in your mental toolkit, ready to apply to new use cases that come up. You may only use a particular function sparingly, say, once every few months, but then discover that it’s indispensable and hard to find when you need it.</p>
 <p>If you are like me, you may find yourself digging through your codebase, churning through all the R project folders that you have created in the past few months, racking your brain to figure out which script holds the best example of your use of this function or set of functions, so that you can “recycle” your code (or remember its syntax!). You may also find yourself returning to the same online article or blog post to grab the same code over and over again. (I have gone <a href="https://markhneedham.com/blog/2015/06/27/r-dplyr-squashing-multiple-rows-per-group-into-one/">here</a> repeatedly whenever I want to squash multiple rows per group into one. I have this tip below as well.)</p>
 <p>I’m not sure if there’s a better solution to this issue of digging through code other than documenting these functions and packages as you use them in a personal central repository. That’s why I feel inspired to write this blog. It is an an attempt to gather some of the ones I use into a short tutorial. Hopefully by sharing them, other folks can learn too!</p>
+<p>Finally, forgive me if the code looks a little washed out. I haven’t taken the time to customize this part of my website’s theme yet.</p>
 </div>
 <div id="reading-one-or-multiple-files-into-one-dataframe" class="section level2">
 <h2>Reading one or multiple files into one dataframe</h2>
@@ -117,22 +118,26 @@ vins_and_odometers %&gt;% head()</code></pre>
 </div>
 <div id="mutate-and-case_when" class="section level2">
 <h2>Mutate and case_when</h2>
-<p>I’m always creating new variables to filter with. <code>dplyr::case_when</code> is a simple way to do this. For instance, if we wanted a variable to identify if an odometer_reading ends in ‘0’, we can create an <code>ends_in_0</code> column. The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value). TRUE is the catchall “everything else” condition. With <code>mutate</code> we are creating a column called <code>ends_in_0</code>, and we are filling it with values from a <code>case_when</code> statement.</p>
-<p>In our case, if the odometer_reading is divisible by 10, then we want <code>case_when</code> to assign <code>TRUE</code> to <code>ends_in_0</code>, otherwise (if <code>TRUE</code>), we want <code>case_when</code> to assign <code>FALSE</code> to <code>ends_in_0</code>.</p>
-<pre class="r"><code>divisible_by_ten &lt;- vins_and_odometers %&gt;% mutate(
-   ends_in_0 = case_when(as.integer(odometer_readings) %% 10 == 0 ~ TRUE,
-                         TRUE ~ FALSE)
-)
-divisible_by_ten %&gt;% head()</code></pre>
+<p>I’m always creating new variables to filter with. <code>dplyr::case_when</code> is a simple way to do this. For instance, if we wanted a variable to place odometer_readings into buckets, we can create a <code>buckets</code> variable. The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value). TRUE is the catchall “everything else” condition. Each condition is evaluated one at a time, so only rows that don’t meet the first conditions are considered for the next conditions. <code>mutate</code> will create our column, and we will fill it with values from a <code>case_when</code> statement:</p>
+<p>In our case, if the odometer_reading is under 25000, then we want <code>case_when</code> to assign <code>'Under 25K'</code> to <code>bucket</code>, otherwise, continue checking down the list. Finally, assign <code>&quot;Above 100K'</code> to everything else.</p>
+<pre class="r"><code>buckets &lt;- vins_and_odometers %&gt;% 
+    mutate(
+        odometer_readings = as.integer(odometer_readings), #change from character to integer
+        bucket = case_when(odometer_readings &lt; 25000 ~ &#39;Under 25K&#39;,
+                           odometer_readings &lt; 50000 ~ &#39;25K to 50K&#39;,
+                           odometer_readings &lt; 75000 ~ &#39;50K to 75K&#39;,
+                           odometer_readings &lt; 100000 ~ &#39;75K to 100K&#39;,
+                           TRUE ~ &#39;Above 100K&#39;))
+buckets %&gt;% head()</code></pre>
 <pre><code>## # A tibble: 6 x 3
-##   vin       odometer_readings ends_in_0
-##   &lt;chr&gt;     &lt;chr&gt;             &lt;lgl&gt;    
-## 1 1C4RJFDJF 40                TRUE     
-## 2 1C4RJFDJF 10206             FALSE    
-## 3 1C4RJFDJF 24250             TRUE     
-## 4 1C4RJFDJF 24260             TRUE     
-## 5 1C4RJFDJF 22988             FALSE    
-## 6 1C4RJFDJF 22989             FALSE</code></pre>
+##   vin       odometer_readings bucket   
+##   &lt;chr&gt;                 &lt;int&gt; &lt;chr&gt;    
+## 1 1C4RJFDJF                40 Under 25K
+## 2 1C4RJFDJF             10206 Under 25K
+## 3 1C4RJFDJF             24250 Under 25K
+## 4 1C4RJFDJF             24260 Under 25K
+## 5 1C4RJFDJF             22988 Under 25K
+## 6 1C4RJFDJF             22989 Under 25K</code></pre>
 </div>
 <div id="min-date" class="section level2">
 <h2>Min date</h2>

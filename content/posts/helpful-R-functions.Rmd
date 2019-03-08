@@ -28,6 +28,8 @@ If you are like me, you may find yourself digging through your codebase, churnin
 
 I'm not sure if there's a better solution to this issue of digging through code other than documenting these functions and packages as you use them in a personal central repository.  That's why I feel inspired to write this blog.  It is an an attempt to gather some of the ones I use into a short tutorial.  Hopefully by sharing them, other folks can learn too!
 
+Finally, forgive me if the code looks a little washed out.  I haven't taken the time to customize this part of my website's theme yet. 
+
 
 ## Reading one or multiple files into one dataframe
 
@@ -104,17 +106,21 @@ vins_and_odometers %>% head()
 
 ## Mutate and case_when
 
-I'm always creating new variables to filter with.  `dplyr::case_when` is a simple way to do this. For instance, if we wanted a variable to identify if an odometer_reading ends in '0', we can create an `ends_in_0` column.  The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value).  TRUE is the catchall "everything else" condition.  With `mutate` we are creating a column called `ends_in_0`, and we are filling it with values from a `case_when` statement.
+I'm always creating new variables to filter with.  `dplyr::case_when` is a simple way to do this. For instance, if we wanted a variable to place odometer_readings into buckets, we can create a `buckets` variable.  The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value).  TRUE is the catchall "everything else" condition.  Each condition is evaluated one at a time, so only rows that don't meet the first conditions are considered for the next conditions.  `mutate` will create our column, and we will fill it with values from a `case_when` statement:
 
 
-In our case, if the odometer_reading is divisible by 10, then we want `case_when` to assign `TRUE` to `ends_in_0`, otherwise (if `TRUE`), we want `case_when` to assign `FALSE` to `ends_in_0`.
+In our case, if the odometer_reading is under 25000, then we want `case_when` to assign `'Under 25K'` to `bucket`, otherwise, continue checking down the list. Finally, assign `"Above 100K'` to everything else.
 
 ```{r}
-divisible_by_ten <- vins_and_odometers %>% mutate(
-   ends_in_0 = case_when(as.integer(odometer_readings) %% 10 == 0 ~ TRUE,
-                         TRUE ~ FALSE)
-)
-divisible_by_ten %>% head()
+buckets <- vins_and_odometers %>% 
+    mutate(
+        odometer_readings = as.integer(odometer_readings), #change from character to integer
+        bucket = case_when(odometer_readings < 25000 ~ 'Under 25K',
+                           odometer_readings < 50000 ~ '25K to 50K',
+                           odometer_readings < 75000 ~ '50K to 75K',
+                           odometer_readings < 100000 ~ '75K to 100K',
+                           TRUE ~ 'Above 100K'))
+buckets %>% head()
 
 ```
 
