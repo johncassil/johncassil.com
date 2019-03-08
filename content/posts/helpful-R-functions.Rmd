@@ -1,0 +1,193 @@
+---
+title: "Some helpful R functions"
+author: "John Paul Cassil"
+date: '2019-03-08'
+output: blogdown::html_page
+categories: ["Helpful"]
+---
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, error=FALSE}
+library(readr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(purrr)
+```
+
+
+## What's this about?
+
+It's been a couple months since my last post, and I've been wondering what would make a good blog post. I decided to cameo a few R functions that I have found really helpful. 
+
+
+The structure and setup of any data analysis is much more important than the technology that is used to accomplish the individual steps involved. However, it helps to have handy functions readily available in your mental toolkit, ready to apply to new use cases that come up.  You may only use a particular function sparingly, say, once every few months, but then discover that it's indispensable and hard to find when you need it.  
+
+
+If you are like me, you may find yourself digging through your codebase, churning through all the R project folders that you have created in the past few months, racking your brain to figure out which script holds the best example of your use of this function or set of functions, so that you can "recycle" your code (or remember its syntax!).  You may also find yourself returning to the same online article or blog post to grab the same code over and over again. (I have gone [here](https://markhneedham.com/blog/2015/06/27/r-dplyr-squashing-multiple-rows-per-group-into-one/) repeatedly whenever I want to squash multiple rows per group into one. I have this tip below as well.)
+
+
+I'm not sure if there's a better solution to this issue of digging through code other than documenting these functions and packages as you use them in a personal central repository.  That's why I feel inspired to write this blog.  It is an an attempt to gather some of the ones I use into a short tutorial.  Hopefully by sharing them, other folks can learn too!
+
+
+## Reading one or multiple files into one dataframe
+
+I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together.  Assuming your data is local or on a shared drive (and not hadoop), combining `fs::dir_ls()`,  `purrr::map_dfr` and `readr::read_csv` is a nifty, quick way to get your data loaded in.  
+
+
+The `fs` 📦 has a ton of cool file and folder manipulation features.  `dir_ls()` lists the files in a directory, and `dir_info()` gives a ton of extra information about all of the files in a tibble (including modified dates!)  The `glob` argument below allows you to specify a 'wildcard aka globbing pattern (e.g. *.csv) passed on to grep() to filter paths.'  In this case, I know any file(s) sitting in the folder have VIN in the name, so I'm grabbing a list of file paths that match and passing each one to `read_csv` sequentially with `map_dfr`, which returns a dataframe.  (The data are also in the "static/data/" folder.)
+
+
+```{r}
+rollback_VINs <- fs::dir_ls(path = here::here("static", "data"), glob = "*VIN*") %>% 
+    purrr::map_dfr(read_csv)
+```
+
+## Cleaning up names
+When data comes in with spaces in the name, it's more difficult to work with.  Specifying variable names with backticks is annoying.  `janitor::clean_names` is your best friend!  It cleans pesky names by adding underscores and making everything lowercase:
+```{r}
+clean_rollback_VINs <- rollback_VINs %>% 
+    janitor::clean_names()
+clean_rollback_VINs %>% colnames()
+```
+
+## Squishing vins
+
+This one is specific to working with vehicle data, since VIN-level data is proprietary.  Vehicles have a 17 digit VIN (Vehicle Identification Number), and a subset of that is a VIN select pattern or a "Squished VIN" that only decodes to certain information about the VIN like Year Make and Model.  To replace VINs with that squished VIN, this is a helpful function.  (It also allows for joining to certain CARFAX tables for easy VIN decoding!)
+
+```{r}
+library(dplyr)
+library(stringr)
+
+squished_rollback_VINs <- clean_rollback_VINs %>% 
+    mutate(
+        vin = paste0(str_sub(vin, start = 1, end = 8), str_sub(vin, start = 10, end = 10))
+    )
+
+squished_rollback_VINs %>% head()
+```
+
+## Lag & lead
+
+Sometimes it is helpful to be able to filter rows of data based on their comparison to other rows on some variable.  For instance, I was recently working with some vehicle history data and needed to find the amount by which some vehicles' odometers had been rolled back.  The easiest way to do this is to group the data by VIN, arrange it by VIN & date, and use the `lag` function to calculate the difference of the odometer on the current record to the odometer on the row above:
+
+```{r}
+odometer_increases <- squished_rollback_VINs %>% 
+    group_by(vin) %>% 
+    arrange(vin, date) %>% 
+    mutate(odometer_increase = odometer_reading - lag(odometer_reading)) %>% 
+    ungroup()
+    
+odometer_increases %>% head()
+```
+
+Now, we could filter on the negative values and get the date, odometer reading, and (negative) increase of all records where an odometer rollback was identified. The `lead` function works the same way, but instead of selecting a value from the previous row, it selects the value from the next row.
+
+## Collapse and separate rows
+
+Suppose that you need to group the odometer readings onto one line, in order to have one row per VIN, and one column to contain all the readings for a VIN. We can easily do this with paste and collapse.  
+
+```{r}
+vins_and_readings <- odometer_increases %>% 
+    group_by(vin) %>%
+    summarise(odometer_readings  = paste(odometer_reading, collapse ="|"))
+vins_and_readings %>% head()
+```
+
+
+Now, suppose we needed to do the opposite.  Someone has given us a column with a variable number of odometer readings in it, and we need them all to be separate records!  A nifty tidyr function `separate_rows` does this with ease!
+
+```{r}
+vins_and_odometers <- vins_and_readings %>% 
+    tidyr::separate_rows(odometer_readings)
+vins_and_odometers %>% head()
+```
+
+## Mutate and case_when
+
+I'm always creating new variables to filter with.  `dplyr::case_when` is a simple way to do this. For instance, if we wanted a variable to identify if an odometer_reading ends in '0', we can create an `ends_in_0` column.  The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value).  TRUE is the catchall "everything else" condition.  With `mutate` we are creating a column called `ends_in_0`, and we are filling it with values from a `case_when` statement.
+
+
+In our case, if the odometer_reading is divisible by 10, then we want `case_when` to assign `TRUE` to `ends_in_0`, otherwise (if `TRUE`), we want `case_when` to assign `FALSE` to `ends_in_0`.
+
+```{r}
+divisible_by_ten <- vins_and_odometers %>% mutate(
+   ends_in_0 = case_when(as.integer(odometer_readings) %% 10 == 0 ~ TRUE,
+                         TRUE ~ FALSE)
+)
+divisible_by_ten %>% head()
+
+```
+
+## Min date
+
+There are many cases where I need to filter a dataframe by the earliest date by variable.  For instance, returning to our `odometer_increases` table:
+```{r}
+odometer_increases %>% head()
+```
+
+If we want to select the earliest odometer reading by date, there are a few ways to do this.  I am not convinced that one is better than the other for speed or efficiency, but I will include them here as they all work:
+```{r}
+#Approach 1
+min_odo_1 <- odometer_increases %>% 
+    group_by(vin) %>% 
+    filter(date == min(date)) 
+min_odo_1 %>% 
+    head()
+```
+
+```{r}
+#Approach 2:
+min_odo_2 <- odometer_increases %>% 
+    group_by(vin) %>% 
+    slice(which.min(date)) 
+min_odo_2 %>% 
+    head()
+```
+
+```{r}
+#Approach 3:
+min_odo_3 <- odometer_increases %>% 
+    group_by(vin) %>% 
+    arrange(date) %>% 
+    slice(1)
+min_odo_3 %>% 
+    head()
+```
+
+
+## Easily assemble dataframes
+
+Sometimes, I create various statistics throughout my analysis and then I want to collect them into a dataframe so I can easily write it out to a csv or a table for an email.  `tribble` is amazing for this. You preface column names with a tilde (~) and add a new line for each row of data:
+
+```{r}
+#Calculate some statistics
+average_minimum_odometer <- min_odo_3$odometer_reading %>% mean()
+
+average_odometer_increase <- odometer_increases %>% 
+    filter(odometer_increase > 0) %>% 
+    .$odometer_increase %>% 
+    mean(na.rm = TRUE)
+
+average_odometer_rollback <- odometer_increases %>% 
+    filter(odometer_increase < 0) %>% 
+    .$odometer_increase %>% 
+    mean(na.rm = TRUE)
+
+#Throw them into a dataframe!
+stats <- tribble(
+    ~Statistic, ~Number,
+    "Average Minimum Odometer Reading", average_minimum_odometer,
+    "Average Odometer Increase", average_odometer_increase,
+    "Average Odometer Rollback", average_odometer_rollback
+)
+stats
+
+```
+
+That's all for now!  I hope these tips were helpful!  
+
+I plan to return for future posts on other topics including:
+
+- How to work with the `future` and `furr` packages to multithread `graphql` calls
+- How to connect to and join data between `HDFS` & `Oracle` using `SparklyR` and `RStudio Connect`
+- How to send monthly reports with graphs and data tables via `mailR::send.mail`

@@ -1,0 +1,238 @@
+---
+title: "Some helpful R functions"
+author: "John Paul Cassil"
+date: '2019-03-08'
+output: blogdown::html_page
+categories: ["Helpful"]
+---
+
+
+
+<div id="whats-this-about" class="section level2">
+<h2>What’s this about?</h2>
+<p>It’s been a couple months since my last post, and I’ve been wondering what would make a good blog post. I decided to cameo a few R functions that I have found really helpful.</p>
+<p>The structure and setup of any data analysis is much more important than the technology that is used to accomplish the individual steps involved. However, it helps to have handy functions readily available in your mental toolkit, ready to apply to new use cases that come up. You may only use a particular function sparingly, say, once every few months, but then discover that it’s indispensable and hard to find when you need it.</p>
+<p>If you are like me, you may find yourself digging through your codebase, churning through all the R project folders that you have created in the past few months, racking your brain to figure out which script holds the best example of your use of this function or set of functions, so that you can “recycle” your code (or remember its syntax!). You may also find yourself returning to the same online article or blog post to grab the same code over and over again. (I have gone <a href="https://markhneedham.com/blog/2015/06/27/r-dplyr-squashing-multiple-rows-per-group-into-one/">here</a> repeatedly whenever I want to squash multiple rows per group into one. I have this tip below as well.)</p>
+<p>I’m not sure if there’s a better solution to this issue of digging through code other than documenting these functions and packages as you use them in a personal central repository. That’s why I feel inspired to write this blog. It is an an attempt to gather some of the ones I use into a short tutorial. Hopefully by sharing them, other folks can learn too!</p>
+</div>
+<div id="reading-one-or-multiple-files-into-one-dataframe" class="section level2">
+<h2>Reading one or multiple files into one dataframe</h2>
+<p>I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together. Assuming your data is local or on a shared drive (and not hadoop), combining <code>fs::dir_ls()</code>, <code>purrr::map_dfr</code> and <code>readr::read_csv</code> is a nifty, quick way to get your data loaded in.</p>
+<p>The <code>fs</code> 📦 has a ton of cool file and folder manipulation features. <code>dir_ls()</code> lists the files in a directory, and <code>dir_info()</code> gives a ton of extra information about all of the files in a tibble (including modified dates!) The <code>glob</code> argument below allows you to specify a ’wildcard aka globbing pattern (e.g. *.csv) passed on to grep() to filter paths.’ In this case, I know any file(s) sitting in the folder have VIN in the name, so I’m grabbing a list of file paths that match and passing each one to <code>read_csv</code> sequentially with <code>map_dfr</code>, which returns a dataframe. (The data are also in the “static/data/” folder.)</p>
+<pre class="r"><code>rollback_VINs &lt;- fs::dir_ls(path = here::here(&quot;static&quot;, &quot;data&quot;), glob = &quot;*VIN*&quot;) %&gt;% 
+    purrr::map_dfr(read_csv)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   VIN = col_character(),
+##   date = col_date(format = &quot;&quot;),
+##   `Odometer Reading` = col_integer()
+## )
+## Parsed with column specification:
+## cols(
+##   VIN = col_character(),
+##   date = col_date(format = &quot;&quot;),
+##   `Odometer Reading` = col_integer()
+## )</code></pre>
+</div>
+<div id="cleaning-up-names" class="section level2">
+<h2>Cleaning up names</h2>
+<p>When data comes in with spaces in the name, it’s more difficult to work with. Specifying variable names with backticks is annoying. <code>janitor::clean_names</code> is your best friend! It cleans pesky names by adding underscores and making everything lowercase:</p>
+<pre class="r"><code>clean_rollback_VINs &lt;- rollback_VINs %&gt;% 
+    janitor::clean_names()
+clean_rollback_VINs %&gt;% colnames()</code></pre>
+<pre><code>## [1] &quot;vin&quot;              &quot;date&quot;             &quot;odometer_reading&quot;</code></pre>
+</div>
+<div id="squishing-vins" class="section level2">
+<h2>Squishing vins</h2>
+<p>This one is specific to working with vehicle data, since VIN-level data is proprietary. Vehicles have a 17 digit VIN (Vehicle Identification Number), and a subset of that is a VIN select pattern or a “Squished VIN” that only decodes to certain information about the VIN like Year Make and Model. To replace VINs with that squished VIN, this is a helpful function. (It also allows for joining to certain CARFAX tables for easy VIN decoding!)</p>
+<pre class="r"><code>library(dplyr)
+library(stringr)
+
+squished_rollback_VINs &lt;- clean_rollback_VINs %&gt;% 
+    mutate(
+        vin = paste0(str_sub(vin, start = 1, end = 8), str_sub(vin, start = 10, end = 10))
+    )
+
+squished_rollback_VINs %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   vin       date       odometer_reading
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;
+## 1 JM1FD331P 1994-01-27              144
+## 2 JM1FD331P 1995-01-17             6326
+## 3 JM1FD331P 1997-01-08            15839
+## 4 JM1FD331P 1999-01-12            33707
+## 5 JM1FD331P 2001-01-15            43117
+## 6 JM1FD331P 2001-10-08            45358</code></pre>
+</div>
+<div id="lag-lead" class="section level2">
+<h2>Lag &amp; lead</h2>
+<p>Sometimes it is helpful to be able to filter rows of data based on their comparison to other rows on some variable. For instance, I was recently working with some vehicle history data and needed to find the amount by which some vehicles’ odometers had been rolled back. The easiest way to do this is to group the data by VIN, arrange it by VIN &amp; date, and use the <code>lag</code> function to calculate the difference of the odometer on the current record to the odometer on the row above:</p>
+<pre class="r"><code>odometer_increases &lt;- squished_rollback_VINs %&gt;% 
+    group_by(vin) %&gt;% 
+    arrange(vin, date) %&gt;% 
+    mutate(odometer_increase = odometer_reading - lag(odometer_reading)) %&gt;% 
+    ungroup()
+    
+odometer_increases %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1C4RJFDJF 2015-05-21            10206             10166
+## 3 1C4RJFDJF 2016-07-18            24250             14044
+## 4 1C4RJFDJF 2016-07-25            24260                10
+## 5 1C4RJFDJF 2017-02-01            22988             -1272
+## 6 1C4RJFDJF 2017-03-15            22989                 1</code></pre>
+<p>Now, we could filter on the negative values and get the date, odometer reading, and (negative) increase of all records where an odometer rollback was identified. The <code>lead</code> function works the same way, but instead of selecting a value from the previous row, it selects the value from the next row.</p>
+</div>
+<div id="collapse-and-separate-rows" class="section level2">
+<h2>Collapse and separate rows</h2>
+<p>Suppose that you need to group the odometer readings onto one line, in order to have one row per VIN, and one column to contain all the readings for a VIN. We can easily do this with paste and collapse.</p>
+<pre class="r"><code>vins_and_readings &lt;- odometer_increases %&gt;% 
+    group_by(vin) %&gt;%
+    summarise(odometer_readings  = paste(odometer_reading, collapse =&quot;|&quot;))
+vins_and_readings %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   vin       odometer_readings                                             
+##   &lt;chr&gt;     &lt;chr&gt;                                                         
+## 1 1C4RJFDJF 40|10206|24250|24260|22988|22989|22999|23906|24020|29340      
+## 2 1FTYR10D4 10|3293|9649|13356|26248|27939|109802|110940|111167|89111|111~
+## 3 2FTHF25GM 45000|69157|73871|87756|107898|157500|24272|24284|24308|44728 
+## 4 4T3BA3BBC 10|18440|23487|30015|30288|37736|57734|59630|54729|57568|5778~
+## 5 5FPYK1F4B 4|10|47|12550|23591|24416|32961|36415|36416|54689|58857|58861~
+## 6 JA4MW31R1 1120|4110|8550|18320|72801|76390|80000|95762|96990|109780|378~</code></pre>
+<p>Now, suppose we needed to do the opposite. Someone has given us a column with a variable number of odometer readings in it, and we need them all to be separate records! A nifty tidyr function <code>separate_rows</code> does this with ease!</p>
+<pre class="r"><code>vins_and_odometers &lt;- vins_and_readings %&gt;% 
+    tidyr::separate_rows(odometer_readings)
+vins_and_odometers %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   vin       odometer_readings
+##   &lt;chr&gt;     &lt;chr&gt;            
+## 1 1C4RJFDJF 40               
+## 2 1C4RJFDJF 10206            
+## 3 1C4RJFDJF 24250            
+## 4 1C4RJFDJF 24260            
+## 5 1C4RJFDJF 22988            
+## 6 1C4RJFDJF 22989</code></pre>
+</div>
+<div id="mutate-and-case_when" class="section level2">
+<h2>Mutate and case_when</h2>
+<p>I’m always creating new variables to filter with. <code>dplyr::case_when</code> is a simple way to do this. For instance, if we wanted a variable to identify if an odometer_reading ends in ‘0’, we can create an <code>ends_in_0</code> column. The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value). TRUE is the catchall “everything else” condition. With <code>mutate</code> we are creating a column called <code>ends_in_0</code>, and we are filling it with values from a <code>case_when</code> statement.</p>
+<p>In our case, if the odometer_reading is divisible by 10, then we want <code>case_when</code> to assign <code>TRUE</code> to <code>ends_in_0</code>, otherwise (if <code>TRUE</code>), we want <code>case_when</code> to assign <code>FALSE</code> to <code>ends_in_0</code>.</p>
+<pre class="r"><code>divisible_by_ten &lt;- vins_and_odometers %&gt;% mutate(
+   ends_in_0 = case_when(as.integer(odometer_readings) %% 10 == 0 ~ TRUE,
+                         TRUE ~ FALSE)
+)
+divisible_by_ten %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   vin       odometer_readings ends_in_0
+##   &lt;chr&gt;     &lt;chr&gt;             &lt;lgl&gt;    
+## 1 1C4RJFDJF 40                TRUE     
+## 2 1C4RJFDJF 10206             FALSE    
+## 3 1C4RJFDJF 24250             TRUE     
+## 4 1C4RJFDJF 24260             TRUE     
+## 5 1C4RJFDJF 22988             FALSE    
+## 6 1C4RJFDJF 22989             FALSE</code></pre>
+</div>
+<div id="min-date" class="section level2">
+<h2>Min date</h2>
+<p>There are many cases where I need to filter a dataframe by the earliest date by variable. For instance, returning to our <code>odometer_increases</code> table:</p>
+<pre class="r"><code>odometer_increases %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1C4RJFDJF 2015-05-21            10206             10166
+## 3 1C4RJFDJF 2016-07-18            24250             14044
+## 4 1C4RJFDJF 2016-07-25            24260                10
+## 5 1C4RJFDJF 2017-02-01            22988             -1272
+## 6 1C4RJFDJF 2017-03-15            22989                 1</code></pre>
+<p>If we want to select the earliest odometer reading by date, there are a few ways to do this. I am not convinced that one is better than the other for speed or efficiency, but I will include them here as they all work:</p>
+<pre class="r"><code>#Approach 1
+min_odo_1 &lt;- odometer_increases %&gt;% 
+    group_by(vin) %&gt;% 
+    filter(date == min(date)) 
+min_odo_1 %&gt;% 
+    head()</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+<pre class="r"><code>#Approach 2:
+min_odo_2 &lt;- odometer_increases %&gt;% 
+    group_by(vin) %&gt;% 
+    slice(which.min(date)) 
+min_odo_2 %&gt;% 
+    head()</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+<pre class="r"><code>#Approach 3:
+min_odo_3 &lt;- odometer_increases %&gt;% 
+    group_by(vin) %&gt;% 
+    arrange(date) %&gt;% 
+    slice(1)
+min_odo_3 %&gt;% 
+    head()</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+</div>
+<div id="easily-assemble-dataframes" class="section level2">
+<h2>Easily assemble dataframes</h2>
+<p>Sometimes, I create various statistics throughout my analysis and then I want to collect them into a dataframe so I can easily write it out to a csv or a table for an email. <code>tribble</code> is amazing for this. You preface column names with a tilde (~) and add a new line for each row of data:</p>
+<pre class="r"><code>#Calculate some statistics
+average_minimum_odometer &lt;- min_odo_3$odometer_reading %&gt;% mean()
+
+average_odometer_increase &lt;- odometer_increases %&gt;% 
+    filter(odometer_increase &gt; 0) %&gt;% 
+    .$odometer_increase %&gt;% 
+    mean(na.rm = TRUE)
+
+average_odometer_rollback &lt;- odometer_increases %&gt;% 
+    filter(odometer_increase &lt; 0) %&gt;% 
+    .$odometer_increase %&gt;% 
+    mean(na.rm = TRUE)
+
+#Throw them into a dataframe!
+stats &lt;- tribble(
+    ~Statistic, ~Number,
+    &quot;Average Minimum Odometer Reading&quot;, average_minimum_odometer,
+    &quot;Average Odometer Increase&quot;, average_odometer_increase,
+    &quot;Average Odometer Rollback&quot;, average_odometer_rollback
+)
+stats</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   Statistic                         Number
+##   &lt;chr&gt;                              &lt;dbl&gt;
+## 1 Average Minimum Odometer Reading  19416 
+## 2 Average Odometer Increase          7283.
+## 3 Average Odometer Rollback        -54395.</code></pre>
+<p>That’s all for now! I hope these tips were helpful!</p>
+<p>I plan to return for future posts on other topics including:</p>
+<ul>
+<li>How to work with the <code>future</code> and <code>furr</code> packages to multithread <code>graphql</code> calls</li>
+<li>How to connect to and join data between <code>HDFS</code> &amp; <code>Oracle</code> using <code>SparklyR</code> and <code>RStudio Connect</code></li>
+<li>How to send monthly reports with graphs and data tables via <code>mailR::send.mail</code></li>
+</ul>
+</div>
