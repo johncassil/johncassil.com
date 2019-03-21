@@ -37,8 +37,6 @@ Finally, forgive me if the code looks a little washed out.  I haven't taken the 
 
 I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together.  Assuming your data is local or on a shared drive (and not hadoop), combining `fs::dir_ls`,  `purrr::map_dfr` and `readr::read_csv` is a nifty, quick way to get your data loaded in.  
 
-
-
 The `fs` 📦 has a ton of cool file and folder manipulation features.  `dir_ls` lists the files in a directory, and `dir_info` gives a ton of extra information about all of the files in a tibble (including modified dates!)  The `glob` argument below allows you to specify a 'wildcard aka globbing pattern (e.g. *.csv) passed on to grep() to filter paths.'  In this case, I know any file(s) sitting in the folder have VIN in the name, so I'm grabbing a list of file paths that match and passing each one to `read_csv` sequentially with `map_dfr`, which returns a dataframe.  (The data are also in the "static/data/" folder.)
 
 
@@ -197,6 +195,6 @@ That's all for now!  I hope these tips were helpful!
 
 I plan to return for future posts on other topics including:
 
-- How to work with the `future` and `furr`r packages to multithread `graphql` calls
+- How to work with the `future` and `furrr` packages to multithread `graphql` calls
 - How to connect to and join data between `HDFS` & `Oracle` using `SparklyR` and `RStudio Connect`
 - How to send monthly reports with graphs and data tables via `mailR::send.mail`
