@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="John Paul Cassil">
+    <meta name="description" content="About John Cassil">
+    <meta name="keywords" content="cassil, data science, rstats, R">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Some helpful R functions"/>
+<meta name="twitter:description" content="a.sourceLine { display: inline-block; line-height: 1.25; }a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }a.sourceLine:empty { height: 1.2em; }.sourceCode { overflow: visible; }code.sourceCode { white-space: pre; position: relative; }div.sourceCode { margin: 1em 0; }pre.sourceCode { margin: 0; }@media screen {div.sourceCode { overflow: auto; }}@media print {code.sourceCode { white-space: pre-wrap; }a.sourceLine { text-indent: -1em; padding-left: 1em; }}pre."/>
+
+    <meta property="og:title" content="Some helpful R functions" />
+<meta property="og:description" content="a.sourceLine { display: inline-block; line-height: 1.25; }a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }a.sourceLine:empty { height: 1.2em; }.sourceCode { overflow: visible; }code.sourceCode { white-space: pre; position: relative; }div.sourceCode { margin: 1em 0; }pre.sourceCode { margin: 0; }@media screen {div.sourceCode { overflow: auto; }}@media print {code.sourceCode { white-space: pre-wrap; }a.sourceLine { text-indent: -1em; padding-left: 1em; }}pre." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/helpful-r-functions/" /><meta property="article:published_time" content="2019-03-08T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-03-08T00:00:00&#43;00:00"/>
+
+
+    
+      <base href="/posts/helpful-r-functions/">
+    
+    <title>
+  Some helpful R functions · home
+</title>
+
+    
+      <link rel="canonical" href="/posts/helpful-r-functions/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" integrity="sha256-oSrCnRYXvHG31SBifqP2PM1uje7SJUyX0nTwO2RJV54=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.28d751104f30c16da1aa1bb04015cbe662cacfe0d1b01af4f2240ad58580069c.css" integrity="sha256-KNdREE8wwW2hqhuwQBXL5mLKz&#43;DRsBr08iQK1YWABpw=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.51" />
+  </head>
+
+  <body class=" ">
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      home
+    </a>
+    <input type="checkbox" id="menu-toggle" />
+    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
+    <ul class="navigation-list">
+      
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="/posts/">Blog</a>
+          </li>
+        
+          <li class="navigation-item">
+            <a class="navigation-link" href="/about">About</a>
+          </li>
+        
+      
+      
+    </ul>
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Some helpful R functions</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2019-03-08T00:00:00Z'>
+                March 8, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              11 minutes read
+            </span>
+          </div>
+          <div class="categories">
+  <i class="fas fa-folder"></i>
+    <a href="/categories/helpful/">Helpful</a></div>
+
+          
+        </div>
+      </header>
+
+      <div>
+        
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<div id="whats-this-about" class="section level2">
+<h2>What’s this about?</h2>
+<p>It’s been a couple months since my last post, and I’ve been wondering what would make a good blog post. I decided to cameo a few R functions that I have found really helpful.</p>
+<p>The structure and setup of any data analysis is much more important than the technology that is used to accomplish the individual steps involved. However, it helps to have handy functions readily available in your mental toolkit, ready to apply to new use cases that come up. You may only use a particular function sparingly, say, once every few months, but then discover that it’s indispensable and hard to find when you need it.</p>
+<p>If you are like me, you may find yourself digging through your codebase, churning through all the R project folders that you have created in the past few months, racking your brain to figure out which script holds the best example of your use of this function or set of functions, so that you can “recycle” your code (or remember its syntax!). You may also find yourself returning to the same online article or blog post to grab the same code over and over again. (I have gone <a href="https://markhneedham.com/blog/2015/06/27/r-dplyr-squashing-multiple-rows-per-group-into-one/">here</a> repeatedly whenever I want to squash multiple rows per group into one. I have this tip below as well.)</p>
+<p>I’m not sure if there’s a better solution to this issue of digging through code other than documenting these functions and packages as you use them in a personal central repository. That’s why I feel inspired to write this blog. It is an an attempt to gather some of the ones I use into a short tutorial. Hopefully by sharing them, other folks can learn too!</p>
+<p>Finally, forgive me if the code looks a little washed out. I haven’t taken the time to customize this part of my website’s theme yet.</p>
+</div>
+<div id="reading-one-or-multiple-files-into-one-dataframe" class="section level2">
+<h2>Reading one or multiple files into one dataframe</h2>
+<p>I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together. Assuming your data is local or on a shared drive (and not hadoop), combining <code>fs::dir_ls</code>, <code>purrr::map_dfr</code> and <code>readr::read_csv</code> is a nifty, quick way to get your data loaded in.</p>
+<p>The <code>fs</code> 📦 has a ton of cool file and folder manipulation features. <code>dir_ls</code> lists the files in a directory, and <code>dir_info</code> gives a ton of extra information about all of the files in a tibble (including modified dates!) The <code>glob</code> argument below allows you to specify a ’wildcard aka globbing pattern (e.g. *.csv) passed on to grep() to filter paths.’ In this case, I know any file(s) sitting in the folder have VIN in the name, so I’m grabbing a list of file paths that match and passing each one to <code>read_csv</code> sequentially with <code>map_dfr</code>, which returns a dataframe. (The data are also in the “static/data/” folder.)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">rollback_VINs &lt;-<span class="st"> </span>fs<span class="op">::</span><span class="kw">dir_ls</span>(<span class="dt">path =</span> here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;static&quot;</span>, <span class="st">&quot;data&quot;</span>), <span class="dt">glob =</span> <span class="st">&quot;*VIN*&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="st">    </span>purrr<span class="op">::</span><span class="kw">map_dfr</span>(read_csv)</a></code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   VIN = col_character(),
+##   date = col_date(format = &quot;&quot;),
+##   `Odometer Reading` = col_integer()
+## )
+## Parsed with column specification:
+## cols(
+##   VIN = col_character(),
+##   date = col_date(format = &quot;&quot;),
+##   `Odometer Reading` = col_integer()
+## )</code></pre>
+</div>
+<div id="cleaning-up-names" class="section level2">
+<h2>Cleaning up names</h2>
+<p>When data comes in with spaces in the name, it’s more difficult to work with. Specifying variable names with backticks is annoying. <code>janitor::clean_names</code> is your best friend! It cleans pesky names by adding underscores and making everything lowercase:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">clean_rollback_VINs &lt;-<span class="st"> </span>rollback_VINs <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">    </span>janitor<span class="op">::</span><span class="kw">clean_names</span>()</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">clean_rollback_VINs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">colnames</span>()</a></code></pre></div>
+<pre><code>## [1] &quot;vin&quot;              &quot;date&quot;             &quot;odometer_reading&quot;</code></pre>
+</div>
+<div id="squishing-vins" class="section level2">
+<h2>Squishing vins</h2>
+<p>This one is specific to working with vehicle data, since VIN-level data is proprietary. Vehicles have a 17 digit VIN (Vehicle Identification Number), and a subset of that is a VIN select pattern or a “Squished VIN” that only decodes to certain information about the VIN like Year Make and Model. To replace VINs with that squished VIN, this is a helpful function. (It also allows for joining to certain CARFAX tables for easy VIN decoding!)</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">squished_rollback_VINs &lt;-<span class="st"> </span>clean_rollback_VINs <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">    </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="dt">vin =</span> <span class="kw">paste0</span>(<span class="kw">str_sub</span>(vin, <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">end =</span> <span class="dv">8</span>), <span class="kw">str_sub</span>(vin, <span class="dt">start =</span> <span class="dv">10</span>, <span class="dt">end =</span> <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">    )</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">squished_rollback_VINs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   vin       date       odometer_reading
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;
+## 1 JM1FD331P 1994-01-27              144
+## 2 JM1FD331P 1995-01-17             6326
+## 3 JM1FD331P 1997-01-08            15839
+## 4 JM1FD331P 1999-01-12            33707
+## 5 JM1FD331P 2001-01-15            43117
+## 6 JM1FD331P 2001-10-08            45358</code></pre>
+</div>
+<div id="lag-lead" class="section level2">
+<h2>Lag &amp; lead</h2>
+<p>Sometimes it is helpful to be able to filter rows of data based on their comparison to other rows on some variable. For instance, I was recently working with some vehicle history data and needed to find the amount by which some vehicles’ odometers had been rolled back. The easiest way to do this is to group the data by VIN, arrange it by VIN &amp; date, and use the <code>lag</code> function to calculate the difference of the odometer on the current record to the odometer on the row above:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">odometer_increases &lt;-<span class="st"> </span>squished_rollback_VINs <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(vin) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">    </span><span class="kw">arrange</span>(vin, date) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">odometer_increase =</span> odometer_reading <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(odometer_reading)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">    </span><span class="kw">ungroup</span>()</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">    </a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">odometer_increases <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1C4RJFDJF 2015-05-21            10206             10166
+## 3 1C4RJFDJF 2016-07-18            24250             14044
+## 4 1C4RJFDJF 2016-07-25            24260                10
+## 5 1C4RJFDJF 2017-02-01            22988             -1272
+## 6 1C4RJFDJF 2017-03-15            22989                 1</code></pre>
+<p>Now, we could filter on the negative values and get the date, odometer reading, and (negative) increase of all records where an odometer rollback was identified. The <code>lead</code> function works the same way, but instead of selecting a value from the previous row, it selects the value from the next row.</p>
+</div>
+<div id="collapse-and-separate-rows" class="section level2">
+<h2>Collapse and separate rows</h2>
+<p>Suppose that you need to group the odometer readings onto one line, in order to have one row per VIN, and one column to contain all the readings for a VIN. We can easily do this with paste and collapse.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">vins_and_readings &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(vin) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">odometer_readings  =</span> <span class="kw">paste</span>(odometer_reading, <span class="dt">collapse =</span><span class="st">&quot;|&quot;</span>))</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">vins_and_readings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   vin       odometer_readings                                             
+##   &lt;chr&gt;     &lt;chr&gt;                                                         
+## 1 1C4RJFDJF 40|10206|24250|24260|22988|22989|22999|23906|24020|29340      
+## 2 1FTYR10D4 10|3293|9649|13356|26248|27939|109802|110940|111167|89111|111~
+## 3 2FTHF25GM 45000|69157|73871|87756|107898|157500|24272|24284|24308|44728 
+## 4 4T3BA3BBC 10|18440|23487|30015|30288|37736|57734|59630|54729|57568|5778~
+## 5 5FPYK1F4B 4|10|47|12550|23591|24416|32961|36415|36416|54689|58857|58861~
+## 6 JA4MW31R1 1120|4110|8550|18320|72801|76390|80000|95762|96990|109780|378~</code></pre>
+<p>Now, suppose we needed to do the opposite. Someone has given us a column with a variable number of odometer readings in it, and we need them all to be separate records! A nifty tidyr function <code>separate_rows</code> does this with ease!</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">vins_and_odometers &lt;-<span class="st"> </span>vins_and_readings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">    </span>tidyr<span class="op">::</span><span class="kw">separate_rows</span>(odometer_readings)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">vins_and_odometers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##   vin       odometer_readings
+##   &lt;chr&gt;     &lt;chr&gt;            
+## 1 1C4RJFDJF 40               
+## 2 1C4RJFDJF 10206            
+## 3 1C4RJFDJF 24250            
+## 4 1C4RJFDJF 24260            
+## 5 1C4RJFDJF 22988            
+## 6 1C4RJFDJF 22989</code></pre>
+</div>
+<div id="mutate-and-case_when" class="section level2">
+<h2>Mutate and case_when</h2>
+<p>I’m always creating new variables to filter with. <code>dplyr::case_when</code> is a simple way to do this. For instance, if we wanted a variable to place odometer_readings into buckets, we can create a <code>buckets</code> variable. The general syntax is case_when(condition ~ value, condition ~ value, TRUE ~ value). TRUE is the catchall “everything else” condition. Each condition is evaluated one at a time, so only rows that don’t meet the first conditions are considered for the next conditions. <code>mutate</code> will create our column, and we will fill it with values from a <code>case_when</code> statement:</p>
+<p>In our case, if the odometer_reading is under 25000, then we want <code>case_when</code> to assign <code>'Under 25K'</code> to <code>bucket</code>, otherwise, continue checking down the list. Finally, assign <code>&quot;Above 100K'</code> to everything else.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">buckets &lt;-<span class="st"> </span>vins_and_odometers <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">        <span class="dt">odometer_readings =</span> <span class="kw">as.integer</span>(odometer_readings), <span class="co">#change from character to integer</span></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">        <span class="dt">bucket =</span> <span class="kw">case_when</span>(odometer_readings <span class="op">&lt;</span><span class="st"> </span><span class="dv">25000</span> <span class="op">~</span><span class="st"> &#39;Under 25K&#39;</span>,</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">                           odometer_readings <span class="op">&lt;</span><span class="st"> </span><span class="dv">50000</span> <span class="op">~</span><span class="st"> &#39;25K to 50K&#39;</span>,</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">                           odometer_readings <span class="op">&lt;</span><span class="st"> </span><span class="dv">75000</span> <span class="op">~</span><span class="st"> &#39;50K to 75K&#39;</span>,</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">                           odometer_readings <span class="op">&lt;</span><span class="st"> </span><span class="dv">100000</span> <span class="op">~</span><span class="st"> &#39;75K to 100K&#39;</span>,</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">                           <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &#39;Above 100K&#39;</span>))</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">buckets <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   vin       odometer_readings bucket   
+##   &lt;chr&gt;                 &lt;int&gt; &lt;chr&gt;    
+## 1 1C4RJFDJF                40 Under 25K
+## 2 1C4RJFDJF             10206 Under 25K
+## 3 1C4RJFDJF             24250 Under 25K
+## 4 1C4RJFDJF             24260 Under 25K
+## 5 1C4RJFDJF             22988 Under 25K
+## 6 1C4RJFDJF             22989 Under 25K</code></pre>
+</div>
+<div id="min-date" class="section level2">
+<h2>Min date</h2>
+<p>There are many cases where I need to filter a dataframe by the earliest date by variable. For instance, returning to our <code>odometer_increases</code> table:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">odometer_increases <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1C4RJFDJF 2015-05-21            10206             10166
+## 3 1C4RJFDJF 2016-07-18            24250             14044
+## 4 1C4RJFDJF 2016-07-25            24260                10
+## 5 1C4RJFDJF 2017-02-01            22988             -1272
+## 6 1C4RJFDJF 2017-03-15            22989                 1</code></pre>
+<p>If we want to select the earliest odometer reading by date, there are a few ways to do this. I am not convinced that one is better than the other for speed or efficiency, but I will include them here as they all work:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">#Approach 1</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">min_odo_<span class="dv">1</span> &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="st">    </span><span class="kw">group_by</span>(vin) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="st">    </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) </a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">min_odo_<span class="dv">1</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="st">    </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#Approach 2:</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">min_odo_<span class="dv">2</span> &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="st">    </span><span class="kw">group_by</span>(vin) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="st">    </span><span class="kw">slice</span>(<span class="kw">which.min</span>(date)) </a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">min_odo_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="st">    </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">#Approach 3:</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">min_odo_<span class="dv">3</span> &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">    </span><span class="kw">group_by</span>(vin) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="st">    </span><span class="kw">arrange</span>(date) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="st">    </span><span class="kw">slice</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">min_odo_<span class="dv">3</span> <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="st">    </span><span class="kw">head</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   vin [6]
+##   vin       date       odometer_reading odometer_increase
+##   &lt;chr&gt;     &lt;date&gt;                &lt;int&gt;             &lt;int&gt;
+## 1 1C4RJFDJF 2014-11-12               40                NA
+## 2 1FTYR10D4 2003-12-08               10                NA
+## 3 2FTHF25GM 1994-04-06            45000                NA
+## 4 4T3BA3BBC 2012-06-22               10                NA
+## 5 5FPYK1F4B 2010-12-23                4                NA
+## 6 JA4MW31R1 2000-10-27             1120                NA</code></pre>
+</div>
+<div id="easily-assemble-dataframes" class="section level2">
+<h2>Easily assemble dataframes</h2>
+<p>Sometimes, I create various statistics throughout my analysis and then I want to collect them into a dataframe so I can easily write it out to a csv or a table for an email. <code>tribble</code> is amazing for this. You preface column names with a tilde (~) and add a new line for each row of data:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">#Calculate some statistics</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">average_minimum_odometer &lt;-<span class="st"> </span>min_odo_<span class="dv">3</span><span class="op">$</span>odometer_reading <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mean</span>()</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">average_odometer_increase &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5"><span class="st">    </span><span class="kw">filter</span>(odometer_increase <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-6" data-line-number="6"><span class="st">    </span>.<span class="op">$</span>odometer_increase <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-7" data-line-number="7"><span class="st">    </span><span class="kw">mean</span>(<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb23-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb23-9" data-line-number="9">average_odometer_rollback &lt;-<span class="st"> </span>odometer_increases <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-10" data-line-number="10"><span class="st">    </span><span class="kw">filter</span>(odometer_increase <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="st">    </span>.<span class="op">$</span>odometer_increase <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-12" data-line-number="12"><span class="st">    </span><span class="kw">mean</span>(<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb23-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb23-14" data-line-number="14"><span class="co">#Throw them into a dataframe!</span></a>
+<a class="sourceLine" id="cb23-15" data-line-number="15">stats &lt;-<span class="st"> </span><span class="kw">tribble</span>(</a>
+<a class="sourceLine" id="cb23-16" data-line-number="16">    <span class="op">~</span>Statistic, <span class="op">~</span>Number,</a>
+<a class="sourceLine" id="cb23-17" data-line-number="17">    <span class="st">&quot;Average Minimum Odometer Reading&quot;</span>, average_minimum_odometer,</a>
+<a class="sourceLine" id="cb23-18" data-line-number="18">    <span class="st">&quot;Average Odometer Increase&quot;</span>, average_odometer_increase,</a>
+<a class="sourceLine" id="cb23-19" data-line-number="19">    <span class="st">&quot;Average Odometer Rollback&quot;</span>, average_odometer_rollback</a>
+<a class="sourceLine" id="cb23-20" data-line-number="20">)</a>
+<a class="sourceLine" id="cb23-21" data-line-number="21">stats</a></code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   Statistic                         Number
+##   &lt;chr&gt;                              &lt;dbl&gt;
+## 1 Average Minimum Odometer Reading  19416 
+## 2 Average Odometer Increase          7283.
+## 3 Average Odometer Rollback        -54395.</code></pre>
+<p>That’s all for now! I hope these tips were helpful!</p>
+<p>I plan to return for future posts on other topics including:</p>
+<ul>
+<li>How to work with the <code>future</code> and <code>furrr</code> packages to multithread <code>graphql</code> calls</li>
+<li>How to connect to and join data between <code>HDFS</code> &amp; <code>Oracle</code> using <code>SparklyR</code> and <code>RStudio Connect</code></li>
+<li>How to send monthly reports with graphs and data tables via <code>mailR::send.mail</code></li>
+</ul>
+</div>
+
+      </div>
+
+      <footer>
+        
+
+
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      <footer class="footer">
+  <section class="container">
+    
+    
+    
+      
+      © 2018 - 2019 ♥ John Paul Cassil | Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/rstudio/blogdown">R blogdown</a>.
+    
+    
+  </section>
+</footer>
+
+    </main>
+
+    
+
+  </body>
+
+</html>

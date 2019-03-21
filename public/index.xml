@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>home</title>
+    <link>/</link>
+    <description>Recent content on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Mar 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Helping others with their data science careers</title>
+      <link>/posts/helping-others-with-their-data-science-careers/</link>
+      <pubDate>Thu, 21 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/helping-others-with-their-data-science-careers/</guid>
+      <description>Last week, I posted to LinkedIn about successfully helping a friend in her job search, which got thousands of views and a ton of positive feedback. I started getting overwhelmed with dozens of connection requests from folks in the data science industry, or trying to break into the industry, so I used this momentum to create a Collaborative Data Careers Community LinkedIn group, which is now nearly 400 members strong.</description>
+    </item>
+    
+    <item>
+      <title>Some helpful R functions</title>
+      <link>/posts/helpful-r-functions/</link>
+      <pubDate>Fri, 08 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/helpful-r-functions/</guid>
+      <description>a.sourceLine { display: inline-block; line-height: 1.25; }a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }a.sourceLine:empty { height: 1.2em; }.sourceCode { overflow: visible; }code.sourceCode { white-space: pre; position: relative; }div.sourceCode { margin: 1em 0; }pre.sourceCode { margin: 0; }@media screen {div.sourceCode { overflow: auto; }}@media print {code.sourceCode { white-space: pre-wrap; }a.sourceLine { text-indent: -1em; padding-left: 1em; }}pre.</description>
+    </item>
+    
+    <item>
+      <title>What I am currently (re)learning</title>
+      <link>/posts/what-i-am-currently-relearning/</link>
+      <pubDate>Wed, 28 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/what-i-am-currently-relearning/</guid>
+      <description>Statistical Learning When I did my undergrad at Clemson, I majored in Management, which was a Bachelor of Science program. As such, it heavily comprised science and math courses. I did really well in the maths and statistics classes that I took, (I think I always scored high A&amp;rsquo;s, and so I even tutored for the Advanced Multi-variable Calculus classes after I had taken them.) However, even though I was good at it, I didn&amp;rsquo;t really like higher level math all that much.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Tue, 20 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Hello! I work at CARFAX as a Data Scientist on the Business Development team and help coordinate research projects across the company. I previously worked on the Data Services team, where I helped engineer massive data loads into our vehicle history database. I started learning the R language a couple of years ago, and have used it daily since then, for hundreds of ad-hoc data analyses. I have also used R and Shiny to develop several internal dashboards and apps.</description>
+    </item>
+    
+    <item>
+      <title>All things META</title>
+      <link>/posts/all-things-meta/</link>
+      <pubDate>Tue, 20 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/all-things-meta/</guid>
+      <description>The story of my website I have had a website here for the past 10+ years. The main purpose was to have it for my personal email address, and when i set it up, I integrated it into the beta Google Apps for Business program, (which has long been renamed google suite [Thankfully, I was grandfathered in with a free account.]) Back in the day, I was really interested in web design and I helped a few non-profits design their own websites.</description>
+    </item>
+    
+  </channel>
+</rss>

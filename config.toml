@@ -1,70 +1,74 @@
 baseURL = "http://johncassil.com"
 languageCode = "en-us"
 title = "home"
-theme = "LeaveIt"
+theme = "hugo-coder"
 
-paginate = 12
-enableEmoji = true
-enableRobotsTXT = true
-googleAnalytics = ""
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+languagecode = "en"
+defaultcontentlanguage = "en"
+paginate = 20
+canonifyurls = true
+#ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
-preserveTaxonomyNames = true 
-
-[blackfriday]
-  hrefTargetBlank = true
-  nofollowLinks = true
-  noreferrerLinks = true
-
-[Permalinks]
- posts = "/:year/:filename/"
-
-[menu]
-  [[menu.main]]
-    name = "blog"
-    url = "/posts/"
-    weight = 1
-
-#  [[menu.main]]
-#    name = "Categories"
-#    url = "/categories/"
-#    weight = 2
-#
-#  [[menu.main]]
-#    name = "Tags"
-#    url = "/tags/"
-#    weight = 3 
-
-#  [[menu.main]]
-#    name = "About"
-#    url = "/about/"
-#    weight = 2
+pygmentsstyle = "b2"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+#disqusShortname = "yourdiscussshortname"
 
 [params]
-    since = 2018
     author = "John Paul Cassil"                           # Author's name
-    avatar = "/images/me/jp.jpg"           # Author's avatar
-    subtitle = "exploring the world of data science"         # Subtitle
-    cdn_url = ""           # Base CDN URL
-    home_mode = "" # post or other 
-    google_verification = "" 
-   
     description = "About John Cassil" # site description 
     keywords = "cassil, data science, rstats, R" # site keywords
-
-    beian = ""
-    baiduAnalytics = ""
-
- #   license= '本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可'
-
-[params.social]
-    LinkedIn = "johncassil"
-    Twitter = "johncassil"
-    GitHub = "johncassil"
-    Email   = "john@johncassil.com"
-    Facebook = "johncassil"
-#    Instagram = "johncassil/"
-#    Wechat = "/images/me/wechat.png"  # Wechat QRcode image
-
+    info = "exploring the world of data science"
+    avatarurl = "/images/me/jp.jpg"           # Author's avatar
+    #footercontent = "© 2018 - 2019  John Paul Cassil | Powered by <a href = 'https://github.com/rstudio/blogdown'>R blogdown</a>"
+    dateformat = "January 2, 2006"
+    hideCredits = false
+    hideCopyright = true
+    # Git Commit in Footer, uncomment the line below to enable it.
+    # commit = "https://github.com/luizdepra/hugo-coder/tree/"
+    rtl = false
+    # Use inverted colors... doesn't work?
+    inverted = false
+    # Series see also post count
+    maxSeeAlsoItems = 5
+    # Custom CSS
+    custom_css = []
     
+[taxonomies]
+  series = "series"
+
+[[params.social]]
+    name = "LinkedIn"
+    icon = "fab fa-linkedin"
+    weight = 4
+    url = "https://www.linkedin.com/in/johncassil/"
+
+[[params.social]]
+    name = "Github"
+    icon = "fab fa-github"
+    weight = 1
+    url = "https://github.com/johncassil/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fab fa-twitter"
+    weight = 3
+    url = "https://twitter.com/johncassil/"
+
+
+
+
+[languages]
+    [languages.en]
+        languagename = "English"
+
+        [[languages.en.menu.main]]
+        name = "Blog"
+        weight = 1
+        url = "/posts/"
+
+        [[languages.en.menu.main]]
+        name = "About"
+        weight = 2
+        url = "/About"
+
 

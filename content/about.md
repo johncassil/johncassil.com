@@ -1,7 +1,6 @@
 +++
-title = "about"
+title = "About"
 date = "2018-11-20"
-menu = "main"
 +++
 
 <p><img src="/images/me/jp_croatia.jpg" alt="" /></p>
@@ -13,4 +12,4 @@ On a personal note, I am from the Carolinas, but currently live in the Northern 
 
 
 </br></br></br></br>
-<small><center>This website was produced using [Hugo](https://github.com/gohugoio) and the [LeaveIt theme](https://themes.gohugo.io/leaveit/).</small></center>  
+<small><center>This website was produced using the [Coder theme](https://github.com/luizdepra/hugo-coder/).</small></center>  
