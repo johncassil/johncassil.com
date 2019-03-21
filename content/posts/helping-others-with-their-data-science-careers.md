@@ -1,7 +1,7 @@
 ---
 title: Helping others with their data science careers
 author: ''
-date: '2019-03-20'
+date: '2019-03-21'
 slug: helping-others-with-their-data-science-careers
 categories:  ["Personal", "Career"]
 ---
