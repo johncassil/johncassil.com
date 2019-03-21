@@ -35,10 +35,14 @@ Finally, forgive me if the code looks a little washed out.  I haven't taken the 
 
 ## Reading one or multiple files into one dataframe
 
-I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together.  Assuming your data is local or on a shared drive (and not hadoop), combining `fs::dir_ls()`,  `purrr::map_dfr` and `readr::read_csv` is a nifty, quick way to get your data loaded in.  
+I run into a situation frequently where there are dozens of CSVs sitting somewhere that need to be read in and analyzed together.  Assuming your data is local or on a shared drive (and not hadoop), combining `fs::dir_ls`,  `purrr::map_dfr` and `readr::read_csv` is a nifty, quick way to get your data loaded in.  
 
 
+<<<<<<< HEAD
 The `fs` 📦 has a ton of cool file and folder manipulation features.  `dir_ls` lists the files in a directory, and `dir_info` gives a ton of extra information about all of the files in a tibble (including modified dates!)  The `glob` argument below allows you to specify a 'wildcard aka globbing pattern (e.g. *.csv) passed on to grep() to filter paths.'  In this case, I know any file(s) sitting in the folder have VIN in the name, so I'm grabbing a list of file paths that match and passing each one to `read_csv` sequentially with `map_dfr`, which returns a dataframe.  (The data are also in the "static/data/" folder.)
+=======
+The `fs` 📦 has a ton of cool file and folder manipulation features.  `dir_ls` lists the files in a directory, and `dir_info` gives a ton of extra information about all of the files in a tibble (including modified dates!)  The `glob` argument below allows you to specify a 'wildcard aka globbing pattern (e.g. *.csv) passed on to `grep` to filter paths.'  In this case, I know any file(s) sitting in the folder have VIN in the name, so I'm grabbing a list of file paths that match and passing each one to `read_csv` sequentially with `map_dfr`, which returns a dataframe.  (The data are also in the "static/data/" folder.)
+>>>>>>> 698b0f3dd8f246fda9ca79ab468d2048c5076fb7
 
 
 ```{r}
