@@ -19,7 +19,16 @@ Recently, I have also received questions via private message for advice, and for
 
 ## How I became a "data scientist"
 
-I started coding back in the day when it was cool to change up your MySpace page with custom code snippets.  I enjoyed manipulating everything by adding custom CSS and HTML.  I went on from there to learn some PHP, understand how servers worked, get free hosting plans, and build a slew of websites both in WordPress and from scratch.  I never considered myself great at this, but I could do it, and I enjoyed it for the most part (except deployment headaches, and troubleshooting CSS issues).  It was mostly reverse-engineering what others had done and never building much from scratch.  I didn't feel like I had a firm grasp on, or enjoyed PHP that much, so I went on to study management at Clemson, which included heavy emphases on business strategy, logistics, information systems, and more.  I continued web development as a side job to make some money to help pay for expenses.
+I started coding back in the day when it was cool to change up your MySpace page with custom code snippets.  I enjoyed manipulating everything by adding custom CSS and HTML.  
+
+<center>
+![](https://imgs.xkcd.com/comics/myspace.png "It's like they got together and said 'what do we miss most from the internet in 1998?  that's right, embedded MIDI!")
+</center>
+
+
+
+
+I went on from there to learn some PHP, understand how servers worked, get free hosting plans, and build a slew of websites both in WordPress and from scratch.  I never considered myself great at this, but I could do it, and I enjoyed it for the most part (except deployment headaches, and troubleshooting CSS issues).  It was mostly reverse-engineering what others had done and never building much from scratch.  I didn't feel like I had a firm grasp on, or enjoyed PHP that much, so I went on to study management at Clemson, which included heavy emphases on business strategy, logistics, information systems, and more.  I continued web development as a side job to make some money to help pay for expenses.
 
 After an internship at the US State Department, I got a start to my career in the tech world on a development team of four major budgeting applications for the DOD and several other agencies.  My role included everything from functional/business analyst to client-facing product owner.  This required not only expertise in finance, the US government budgeting process, and excellent (internal and external) communication skills (All things I developed on the job), but also a keen understanding of how the data was being stored, presented, and manipulated in our applications.  I taught myself SQL online and got plenty of use out of it, since part of my role included serving as the Quality Assurance / Testing lead.  I learned some handy formulas in Excel to build digestible test plans.  More importantly, I learned well how to work with software developers to get things done. 
 
@@ -42,5 +51,12 @@ Being the resident data expert, you will frequently be asked to answer questions
 These are my thoughts, but the situation may be completely different for companies where there is a major data science focus, or where models are the product. I'm speaking from experience in a company where information is the core product and the client is consumers and players in the automotive industry.
 
 Another note, since predictive modeling is largely based on applying mathematical algorithms to data, it's important to understand the theory and intuition behind the algorithms at your disposal, in order to know what will and won't be effective *or correct* for your data set and your goals.  This is why statistics and maths are important in this discipline. I took advanced calculus and statistics classes at my university, but I didn't learn it at a master's or PHD level, and I don't consider myself a "statistician" like some of the folks in this field.  To counteract my [impostor syndrome](https://caitlinhudon.com/2018/01/19/imposter-syndrome-in-data-science/), I have recently been learning a lot more outside of work in this area to brush up on my own knowledge and understanding.  I have been taking classes online, working through books like ["ISLR"](https://www-bcf.usc.edu/~gareth/ISL/), and learning through classes with practical exercises on [DataCamp](https://www.datacamp.com/) (which I highly recommend!).
+
+
+<center>
+![](https://files.explosm.net/comics/Rob/profits.png "I'm not sure how this relates to Impostor Syndrome, but there must be a connection.")
+</center>
+
+
 
 I hope this has been helpful, and I'd like to hear your stories as well.  If you are somehow involved in the data world, join the group  [here](https://www.linkedin.com/groups/12225054) and share!
