@@ -1,0 +1,145 @@
+---
+title: "Piping dbplyr into custom SQL"
+author: "John Paul Cassil"
+date: '2020-02-08'
+output: 
+    blogdown::html_page:
+        highlight: tango
+categories: ["Helpful"]
+---
+    
+I haven't blogged much in the last year, and not for lack of topics.  Any free time I have  outside of work has been drastically minimized, both in the preparation for the birth of my daughter, and afterwards, committed to her service.  I haven't felt the need to blog much because the topics within my expertise are so adeptly covered by others in the [#rstats](https://twitter.com/hashtag/rstats) community.  On the other hand, my previous post with helpful functions has been quite frequently viewed by me and other analysts on our team, so it was of great value.  In the meantime, in regard to my previous question of a solution to store snippets of code for repeated use in analyses, I have also discovered and made some use of [Github gists](https://help.github.com/en/github/writing-on-github/creating-gists) which is a free tool with which to create, document, and store code chunks.
+
+I recently ran into an issue and it took quite some time and frustrated googling to solve.  It's the type of issue that you struggle to construct a good query around, and you either keep re-reading the same irrelevant forums, or you find someone asking roughly the same question in a thread where no one answers satisfactorily.  I figure that solving such a problem demands a record of the solution for others to find and hopefully use.  
+
+
+<p><center><img src="https://i.redd.it/0k9t3mfv4el21.png" alt="" /></center></p>
+
+
+One of my colleagues has been working with some data in Redshift, and discovered that could be useful in creating a set of valuable reports for some of our external clients.  After producing a prototype report using (I think) other tools like Tableau and Excel, they asked me to help create the reports with R and put it into production for more clients. 
+
+After installing the appropriate [Redshift drivers](https://aws.amazon.com/blogs/big-data/connecting-r-with-amazon-redshift/) and setting up my connection on our RStudio Server Pro instance, I realized that [`@EngelhardtCR`](https://twitter.com/EngelhardtCR) had already done that for us and wrapped everything into a nice tidy connection function in our internal package.  (Spoiler: His function is more elegant than what I had crafted, so I used it.)
+
+I was handed a query, so the next step was analysis on the tables being used in the joins.  The data, even with appropriate filters are incredibly large: hundreds of millions of rows.  Collecting large subsets of this data into an R session is both ill-advised and also liable to crash/lock your R / Rstudio session. 
+
+Over the past couple of years, I have gotten very used to using dplyr syntax for database queries [using dbpylr](https://db.rstudio.com/dplyr/) as opposed to using raw SQL.  I am perfectly comfortable using SQL, but I find it more readable and fluid to use dbplyr from R than using something like `DBI::dbGetQuery()` and passing a really long, unformatted, uncommented SQL query to a database.  It also allows for more efficient query building.  In addition, SQL comes with many flavors, and dbplyr really helps in standardizing the quirks of your database engine as well.  
+
+After taking the Big Data with R workshop at Rstudio::conf(2019) which has since been updated for the recent 2020 conference [(materials here)](https://github.com/rstudio-conf-2020/big-data), I have used sparklyr for dozens of projects.  I have never run into issues transforming my data, likely because of the abundance of easy to access `sdf_*` functions.
+
+In Redshift, as far as I know, such functions have not been created, and storing intermediate dataframes in a pipeline as temporary tables is not as easy, or perhaps impossible.  In my case, I had constructed a chain of joins for various tables and only at the very end needed to transform my data by spreading one field into multiple columns with their respective values.  This in R is somewhat easily achievable with [tidyr::spread()](https://blog.rstudio.com/2014/07/22/introducing-tidyr/) or more recently with the newer [tidyr::pivot_wider()](https://tidyr.tidyverse.org/articles/pivot.html) function.
+
+No luck with a translation into SQL though.  Check out this code example where we have two pipelines, one per table, and another to join them, at which point we would like to spread out a variable:
+
+```{r, eval=FALSE}
+library(dplyr)
+library(dbplyr)
+
+#Reference the tables we will need:
+table_1 <- tbl(con, dbplyr::in_schema("username", "table1"))
+table_2 <- tbl(con, dbplyr::in_schema("username", "table2"))
+
+#Get the relevant data from a table of recent items and inventory dates
+recent_items <- table_1 %>% 
+    mutate(item_date = sql("trunc(start_date)")) %>% #Build some sql to pass through (trunc)
+    filter(item_date > Sys.Date() - 45) %>% #Filter within last 45 days for business reason
+    select(item_date, item_number = some_id)
+
+#Get the relevant data from a table of user actions    
+user_actions <- table_2 %>% 
+    filter(action_type %in% c('Email',
+                           'Save',
+                           'ShareEmail',
+                           'SharePhone',
+                           'Click')
+           ) %>% 
+    group_by(item_number, action_type) %>% 
+    summarize(action_count = n())
+           
+recent_items %>%
+    left_join(user_actions) %>% 
+    spread(key = action_type, value = action_count) %>% 
+    show_query()
+```
+
+In the above code example, I have `show_query()` at the end of the pipeline instead of `compute()` or `collect()`, since it's very helpful to be able to see the generated SQL before it gets sent away to Redshift to be executed. However, it was unsuccessful.  Instead of showing me the SQL, I just get an error:
+
+```{r, eval=FALSE}
+Error in UseMethod("spread_") : 
+  no applicable method for 'spread_' applied to an object of class "c('tbl_Redshift', 'tbl_dbi', 'tbl_sql', 'tbl_lazy', 'tbl')"
+```
+
+
+The error indicates that no translation of `tidyr::spread()` exists on the dbplyr backend to be rendered into SQL for Redshift.  Because the dataset was still too big to bring back into R, I was stuck here for a while, unsure how to spread values into their unique columns in one call to Redshift.  I found [this helpful article](https://dwgeek.com/redshift-pivot-table-transpose-rows-to-column-and-example.html/) on how to 'pivot' a column in Redshift.  This method assumes that one has a unique set of possible values to spread which is known in advance, which fortunately for me was the case.  I filtered the `action_type` column above in my table to only include several values of interest, and I wanted a column for each with a count of their observations, which I had already generated with dbplyr syntax.
+
+My problem was this:  After working for quite some time to generate a lengthy dplyr pipeline (what you see above is only a short example snippet), I was unable for quite some time to figure out how to use that as a base table for this Redshift pivot query I needed to use, without first storing the results in a temp table (which I didn't have the ability to create).  You may have noticed in the code above that I used the `sql()` function, which handily allowed me to inject a specific SQL snippet into my dbplyr code when perhaps translation from R would otherwise not work.  This ability is well documented and most of the pages that Google and DuckDuckGo brought up for my queries referenced this functionality instead of what I really wanted to do. (As an aside, I have been using DuckDuckGo as my default search engine ever since Google [became practically unusable in January](https://twitter.com/jeffseibert/status/1218059136694284288), but I digress.)
+
+I can't pin my finger on why this was so difficult to find, and for some reason I can't even remember how I stumbled upon this solution, but adding `sql_render()` to my workflow appeared to be just the function that I needed. See it in action below:
+
+
+```{r, eval=FALSE}
+library(dplyr)
+library(dbplyr)
+
+#Reference the tables we will need:
+table_1 <- tbl(con, dbplyr::in_schema("username", "table1"))
+table_2 <- tbl(con, dbplyr::in_schema("username", "table2"))
+
+#Get the relevant data from a table of recent items and inventory dates
+recent_items <- table_1 %>% 
+    mutate(item_date = sql("trunc(start_date)")) %>% #Build some sql to pass through (trunc)
+    filter(item_date > Sys.Date() - 45) %>% #Filter within last 45 days for business reason
+    select(item_date, item_number = some_id)
+
+#Get the relevant data from a table of user actions  
+user_actions <- table_2 %>% 
+    filter(action_type %in% c('Email',
+                           'Save',
+                           'ShareEmail',
+                           'SharePhone',
+                           'Click')
+           ) %>% 
+    group_by(item_number, action_type) %>% 
+    summarize(action_count = n())
+
+#Everything has been the same until here:
+           
+#Join the two tables
+items_and_actions <- recent_items %>%
+    left_join(user_actions) 
+
+#At this point, we still haven't kicked off any queries, we essentially just have an 
+#object titled items_and_actions containing a really long SQL command generated for us 
+
+#Query to spread this data into one column per action using items_and_actions as a 'table'
+query_to_spread_actions <- paste0("SELECT 
+                                    item_date,
+                                    item_number, 
+                                    SUM(CASE WHEN data.action_type = 'Email' 
+										THEN data.action_count ELSE 0 END) as email,
+									SUM(CASE WHEN data.action_type = 'Save'
+	    								THEN data.action_count ELSE 0 END) as save,
+									SUM(CASE WHEN data.action_type = 'ShareEmail'
+	    								THEN data.action_count ELSE 0 END) as share_email,
+									SUM(CASE WHEN data.action_type = 'SharePhone'
+	    								THEN data.action_count ELSE 0 END) as share_phone,
+									SUM(CASE WHEN data.action_type = 'Click'
+	    								THEN data.action_count ELSE 0 END) as click
+								   FROM (",
+						  as.character(sql_render(items_and_actions)),
+                						  ") AS data
+				            	   GROUP BY 
+				            	    item_date,
+				            	    item_number
+						             ")
+
+# Kick off query and return results:
+items_and_actions <- DBI::dbGetQuery(con, query_to_spread_actions) %>% as_tibble()
+```
+
+So there you have it!  Wrapping a dplyr pipeline in `as.character(sql_render())` will return the generated SQL for you so that you can reference it inside of another SQL statement.  Not only does this solve the problem, but by keeping the dplyr pipeline in tact, one is able to easily continue making changes above, or perhaps generate additional queries using the same code without needless repetition.  It seems so simple, but it totally saved the day!  
+
+And, that's all for now!  It's time to get some sleep while my baby is sleeping:
+
+<p><center><img src="/images/posts/sleep-when-baby-sleeps-768x955.jpeg" alt="" /></br><small>(Image credit: [Grace Farris](https://www.instagram.com/coupdegracefarris/))</small>
+</center></p>
+
