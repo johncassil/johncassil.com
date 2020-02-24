@@ -18,4 +18,10 @@ I believe we tend to regularly embrace our impostor syndrome.  While listening t
 
 I was inspired to write down the thoughts in this post by a few disparate events:  Chiefly, by my early musings while reading Matthew Crawford’s Shop Class as Soulcraft.  While I appreciate the content of the book so far, it's "chock full" of five dollar words.  I don't fault him too much for it; It's not difficult to see where he's coming from. He's a philosopher. I read theological and philosophical discourses from time to time, so he's coming from a world I'm somewhat familiar with.  I'm just afraid that his message will be lost on people that don't have time to look up too much "fancy language."  Also, as a hobby mechanic myself, with a foot in that community, I would have difficulty recommending it to some of my “get to the point” shop friends.
 
-This concept is also fresh in my mind after RStudio Conf 2020, where I saw a lot of great speeches by experts in certain niche skills that did an amazing job catering to the audience's various levels of knowledge without being patronizing.
+In addition, this concept is also fresh in my mind after RStudio Conf 2020, where I saw a lot of great speeches by experts in certain niche skills that did an amazing job catering to the audience's various levels of knowledge without being patronizing.
+
+Finally, on motivation for writing blog posts, Oscar Baruffa had some interesting insight that spurred me to compose this: 
+
+<center>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Write tweet threads first for practice</p>&mdash; Oscar Baruffa 📊🇿🇦🇳🇱 (@OscarBaruffa) <a href="https://twitter.com/OscarBaruffa/status/1226390980691210240?ref_src=twsrc%5Etfw">February 9, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<cente/r>

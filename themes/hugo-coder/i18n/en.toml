@@ -21,4 +21,4 @@ other = "Sorry, this page does not exist."
 other = "You can head back to <a href=\"{{ . }}\">homepage</a>."
 
 [powered_by]
-other = "© 2018 - 2019 ♥ John Paul Cassil | Powered by"
+other = "© 2018 - 2020 ♥ John Paul Cassil | Powered by"

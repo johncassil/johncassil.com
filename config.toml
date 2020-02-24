@@ -20,7 +20,7 @@ pygmentscodefencesguesssyntax = true
     keywords = "cassil, data science, rstats, R" # site keywords
     info = "exploring the world of data science"
     avatarurl = "/images/me/jp.jpg"           # Author's avatar
-    #footercontent = "© 2018 - 2020  John Paul Cassil | Powered by <a href = 'https://github.com/rstudio/blogdown'>R blogdown</a>"
+    #footercontent = ""
     dateformat = "January 2, 2006"
     hideCredits = false
     hideCopyright = true
